@@ -1,8 +1,8 @@
-
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ParseMode
 from aiogram.utils import executor
+import datetime
 
 # Замените 'YOUR_BOT_TOKEN' на токен вашего бота
 bot = Bot(token='6899127577:AAGFhyWUASygoqxVQSjavpamFwVLUNSpuVc')
@@ -23,15 +23,18 @@ async def start(message: types.Message):
 
 async def send_message():
     while True:
-        for chat_id in chat_ids:
-            try:
-                await bot.send_message(chat_id, 'Я играю в доту', parse_mode=ParseMode.HTML)
-            except Exception as e:
-                print(f'Ошибка при отправке сообщения: {e}')
-        await asyncio.sleep(30)  
+        now = datetime.datetime.now()
+        if now.weekday() == 4 and now.hour == 18 and now.minute == 0:  # Пятница, 18:00 по московскому времени
+            for chat_id in chat_ids:
+                try:
+                    await bot.send_message(chat_id, 'Я играю в доту', parse_mode=ParseMode.HTML)
+                except Exception as e:
+                    print(f'Ошибка при отправке сообщения: {e}')
+        await asyncio.sleep(60)  # Проверка каждую минуту
 
 if __name__ == '__main__':
     dp.register_message_handler(start, commands=['start'])
     loop = asyncio.get_event_loop()
     loop.create_task(send_message())
     executor.start_polling(dp, on_startup=on_startup)
+
